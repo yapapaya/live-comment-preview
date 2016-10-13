@@ -321,29 +321,13 @@ class Live_Comment_Preview {
 	 */
 	function create_template() {
 
-		$template = '
-		<ol class="comment-list">
-			<li id="comment-lcp" class="comment">
-				<article id="div-comment-lcp" class="comment-body">
-					<footer class="comment-meta">
-						<div class="comment-author vcard">
-							<img src="AVATAR_URL" alt="" class="avatar avatar-' . $this->avatar_size . '" width="' . $this->avatar_size . '" height="' . $this->avatar_size . '"/>
-							<b class="fn"><a href="#" rel="external nofollow" class="url">COMMENT_AUTHOR</a></b>
-							<span class="says">says:</span>
-						</div>
-						<div class="comment-metadata">
-							<a href="/#comment-lcp">
-								<time datetime="' . date( 'c' ) . ' "> ' . date( 'F j, Y \a\t g:i' ) . ' </time>
-							</a>
-						</div>
-					</footer>
-					<div class="comment-content">
-						COMMENT_CONTENT
-					</div>
-				</article>
-			</li>
-		</ol>';
+		// Get the template from the specified file.
+		$template = file_get_contents( plugin_dir_url( __FILE__ ) . 'include/default-comment-template.html' );
 
+		// Replace the hardcoded strings into their respective values.
+		$template = preg_replace( '/AVATAR_SIZE/', $this->avatar_size, $template );
+		$template = preg_replace( '/ISO_8601_DATE_FORMAT/', date( 'c' ), $template );
+		$template = preg_replace( '/DEFAULT_DATE_FORMAT/', date( 'F j, Y \a\t g:i a' ), $template );
 		return $template;
 	}
 
