@@ -26,7 +26,7 @@
  * The main plugin class.
  *
  */
-include 'class-live-comment-preview.php';
+include 'classes/class-live-comment-preview.php';
 
 /**
  * Hooks the plugin class on `init`.
@@ -39,7 +39,7 @@ function live_comment_preview_setup() {
 	global $live_comment_preview;
 
 	if ( class_exists( 'Live_Comment_Preview' ) && ! isset( $live_comment_preview ) ) {
-		$live_comment_preview = new Live_Comment_Preview();
+		$live_comment_preview = new Live_Comment_Preview( __FILE__ );
 
 		// Invoke the lcp_init() method to display the comment preview.
 		$live_comment_preview->lcp_init();
