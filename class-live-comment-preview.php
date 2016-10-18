@@ -216,7 +216,7 @@ class Live_Comment_Preview {
 		}
 
 		ob_start();
-		include( $file );
+		load_template( $file );
 		$template = ob_get_clean();
 
 		// Get avatar size.
@@ -276,7 +276,7 @@ class Live_Comment_Preview {
 		$wp_query->comment_count = 1;
 
 		ob_start();
-		include( $file );
+		load_template( $file );
 		$template = ob_get_clean();
 
 		if ( preg_match( '@<ol(.*?)class=.(commentlist|comment-list)(.*)</ol>@s', $template, $matches ) ) {

@@ -26,7 +26,7 @@
  * The main plugin class.
  *
  */
-include 'class-live-comment-preview.php';
+load_template( 'class-live-comment-preview.php' );
 
 /**
  * Hooks the plugin class on `init`.
