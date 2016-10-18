@@ -309,7 +309,7 @@ class Live_Comment_Preview {
 	function create_template() {
 
 		// Get the template from the specified file.
-		$template = file_get_contents( plugin_dir_url( __FILE__ ) . 'include/default-comment-template.html' );
+		$template = file_get_contents( plugin_dir_url( $this->plugin_file ) . 'templates/default-comment-template.html' );
 
 		// Replace the hardcoded strings into their respective values.
 		$template = preg_replace( '/AVATAR_SIZE/', $this->avatar_settings["avatar_size"], $template );
