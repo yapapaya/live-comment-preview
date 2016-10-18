@@ -50,24 +50,34 @@ class Live_Comment_Preview {
 	public $live_preview_div_added;
 
 	/**
+	 * Plugin's main file
+	 *
+	 * @var string $plugin_file
+	 */
+	public $plugin_file;
+
+	/**
 	 * Initialize defaults.
 	 *
 	 * @var bool $live_preview_div_added
 	 */
-	function __construct() {
+	function __construct( $file ) {
 
 		/*
 		 * Gravatar specific defaults.
 		 * Refer https://en.gravatar.com/site/implement/images/ for Gravatar default values.
 		 */
 		$this->avatar_settings = array(
-			avatar_size    => self::DEFAULT_AVATAR_SIZE,
-			avatar_default => self::DEFAULT_AVATAR_TO_DISPLAY,
-			avatar_rating  => self::DEFAULT_AVATAR_RATING,
+			"avatar_size"    => self::DEFAULT_AVATAR_SIZE,
+			"avatar_default" => self::DEFAULT_AVATAR_TO_DISPLAY,
+			"avatar_rating"  => self::DEFAULT_AVATAR_RATING,
 		);
 
 		// UI defaults.
 		$this->live_preview_div_added = false;
+
+		// Plugin's main file.
+		$this->plugin_file = $file;
 	}
 
 	/**
@@ -100,9 +110,9 @@ class Live_Comment_Preview {
 	 */
 	function lcp_include_assets() {
 		wp_enqueue_script( 'jquery' );
-		wp_enqueue_script( 'live-cp-md5', plugin_dir_url( __FILE__ ) . 'assets/js/md5.js' );
-		wp_enqueue_script( 'live-comment-preview', plugin_dir_url( __FILE__ ).'assets/js/live-comment-preview.js' );
-		wp_enqueue_style( 'live-comment-preview', plugins_url( '/assets/css/live-comment-preview.css', __FILE__ ) );
+		wp_enqueue_script( 'live-cp-md5', plugin_dir_url( $this->plugin_file ) . 'assets/js/md5.js' );
+		wp_enqueue_script( 'live-comment-preview', plugin_dir_url( $this->plugin_file ).'assets/js/live-comment-preview.js' );
+		wp_enqueue_style( 'live-comment-preview', plugins_url( '/assets/css/live-comment-preview.css', $this->plugin_file ) );
 	}
 
 	/**
