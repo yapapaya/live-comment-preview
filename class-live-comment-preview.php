@@ -407,5 +407,3 @@ class Live_Comment_Preview {
 		return $url;
 	}
 }
-
-?>
