@@ -7,27 +7,12 @@
 class Live_Comment_Preview {
 
 	/**
-	 * Size of the Avatar to be displayed.
+	 * An associative array of Avatar settings.
+	 * Array keys include - avatar_size, avatar_default, avatar_rating.
 	 *
-	 * @var int $avatar_size
+	 * @var array $avatar_settings
 	 */
-	protected $avatar_size;
-
-	/**
-	 * Default Avatar to be shown if no image is associated.
-	 *
-	 * Default Avatar includes 404, mm, identicon, monsterid, wavatar, retro, blank.
-	 *
-	 * @var string $avatar_default
-	 */
-	protected $avatar_default;
-
-	/**
-	 * Avatar rating to identify image appropriateness.
-	 *
-	 * @var string $avatar_rating
-	 */
-	protected $avatar_rating;
+	protected $avatar_settings;
 
 	/**
 	 * Avatar rating to identify image appropriateness.
@@ -75,9 +60,11 @@ class Live_Comment_Preview {
 		 * Gravatar specific defaults.
 		 * Refer https://en.gravatar.com/site/implement/images/ for Gravatar default values.
 		 */
-		$this->avatar_size    = self::DEFAULT_AVATAR_SIZE;
-		$this->avatar_default = self::DEFAULT_AVATAR_TO_DISPLAY;
-		$this->avatar_rating  = self::DEFAULT_AVATAR_RATING;
+		$this->avatar_settings = array(
+			avatar_size    => self::DEFAULT_AVATAR_SIZE,
+			avatar_default => self::DEFAULT_AVATAR_TO_DISPLAY,
+			avatar_rating  => self::DEFAULT_AVATAR_RATING,
+		);
 
 		// UI defaults.
 		$this->live_preview_div_added = false;
@@ -141,8 +128,8 @@ class Live_Comment_Preview {
 		$js_vars['emailID']       = 'email';
 
 		// Set Avatar specific data.
-		$js_vars['avatar_size']   = $this->avatar_size;
-		$js_vars['avatar_rating'] = $this->avatar_rating;
+		$js_vars['avatar_size']   = $this->avatar_settings["avatar_size"];
+		$js_vars['avatar_rating'] = $this->avatar_settings["avatar_rating"];
 
 		// Localize data to be accessed via Javascript.
 		wp_localize_script( 'live-comment-preview', 'ya_live_cp', $js_vars );
@@ -170,7 +157,7 @@ class Live_Comment_Preview {
 		$current_user = wp_get_current_user();
 
 		if ( $current_user->ID ) {
-			$url = $this->get_gravatar( $current_user->user_email, $this->avatar_size, $this->avatar_default, $this->avatar_rating );
+			$url = $this->get_gravatar( $current_user->user_email, $this->avatar_settings );
 
 			$local_js['display_name']   = addslashes( $current_user->display_name );
 			$local_js['user_gravatar']  = addslashes( $url );
@@ -237,7 +224,7 @@ class Live_Comment_Preview {
 				$img_tag = $matches[0];
 
 				if ( preg_match( '@width=.([0-9]+)@', $img_tag, $matches ) ) {
-						$this->avatar_size = $matches[1];
+						$this->avatar_settings["avatar_size"] = $matches[1];
 				}
 		}
 
@@ -301,7 +288,7 @@ class Live_Comment_Preview {
 					$img_tag = $matches[0];
 
 				if ( preg_match( '@width=.([0-9]+)@', $img_tag, $matches ) ) {
-						$this->avatar_size = $matches[1];
+						$this->avatar_settings["avatar_size"] = $matches[1];
 				}
 
 				$new_img_tag = preg_replace( '@src=("|\')(.*?)("|\')@', 'src=$1AVATAR_URL$3', $img_tag );
@@ -325,7 +312,7 @@ class Live_Comment_Preview {
 		$template = file_get_contents( plugin_dir_url( __FILE__ ) . 'include/default-comment-template.html' );
 
 		// Replace the hardcoded strings into their respective values.
-		$template = preg_replace( '/AVATAR_SIZE/', $this->avatar_size, $template );
+		$template = preg_replace( '/AVATAR_SIZE/', $this->avatar_settings["avatar_size"], $template );
 		$template = preg_replace( '/ISO_8601_DATE_FORMAT/', date( 'c' ), $template );
 		$template = preg_replace( '/DEFAULT_DATE_FORMAT/', date( 'F j, Y \a\t g:i a' ), $template );
 		return $template;
@@ -381,9 +368,8 @@ class Live_Comment_Preview {
 		 * @todo Check if Show Avatars option has been enabled. This could be an enhancement.
 		 */
 		// $this->is_show_avatars = get_option( 'show_avatars' );
-
-		$this->avatar_rating   = get_option( 'avatar_rating' );
-		$this->avatar_default  = get_option( 'avatar_default' );
+		$this->avatar_settings["avatar_rating"]  = get_option( 'avatar_rating' );
+		$this->avatar_settings["avatar_default"] = get_option( 'avatar_default' );
 	}
 
 	/**
@@ -392,14 +378,16 @@ class Live_Comment_Preview {
 	 * @link https://gravatar.com/site/implement/images/php/
 	 *
 	 * @param string $email          The email address.
-	 * @param string $avatar_size    Size in pixels, defaults to 80px [ 1 - 2048 ].
-	 * @param string $avatar_default Default imageset to use.
-	 * @param string $avatar_rating  Maximum rating (inclusive) [ g | pg | r | x ].
+	 * @param string $avatar_settings {
+	 *     @type int    $avatar_size    Size of the Avatar.
+	 *     @type string $avatar_default Avatar to display.
+	 *     @type string $avatar_rating  Avatar rating.
+	 * }
 	 * @param bool   $img  Optional. True to return a complete IMG tag, False for just the URL.
 	 * @param array  $atts Optional. Additional key/value attributes to include in the IMG tag.
 	 * @return string                String containing either just a URL or a complete image tag.
 	 */
-	protected function get_gravatar( $email, $avatar_size, $avatar_default, $avatar_rating, $img = false, $atts = array() ) {
+	protected function get_gravatar( $email, $avatar_settings, $img = false, $atts = array() ) {
 
 		$url = 'https://www.gravatar.com/avatar/';
 		if ( '' === trim( $email ) ) {
@@ -407,7 +395,7 @@ class Live_Comment_Preview {
 		} else {
 			$url .= md5( strtolower( trim( $email ) ) );
 		}
-		$url .= "?s=$avatar_size&d=$avatar_default&r=$avatar_rating";
+		$url .= '?s=' . $avatar_settings["avatar_size"] .'&d=' . $avatar_settings["avatar_default"] . '&r='. $avatar_settings["avatar_rating"];
 
 		if ( $img ) {
 			$url = '<img src="' . $url . '"';
