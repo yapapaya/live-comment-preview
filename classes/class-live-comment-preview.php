@@ -188,8 +188,8 @@ class Live_Comment_Preview {
 	 */
 	function template_file() {
 		$files = array(
-			'user'  => get_stylesheet_directory() . '/comment-preview.php',
-			'theme' => get_stylesheet_directory() . '/comments.php',
+			'user'  => get_template_directory() . '/comment-preview.php',
+			'theme' => get_template_directory() . '/comments.php',
 		);
 
 		foreach ( $files as $index=>$file ) {
