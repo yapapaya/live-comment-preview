@@ -208,7 +208,7 @@ class Live_Comment_Preview {
 		$template = $this->template_file();
 		$template_function = $template[0].'_template';
 		$file = $template[1];
-		$html = $this->{$template_function}( $file );
+		$html = file_exists($file) ? $this->{$template_function}( $file ) : false;
 		return $html;
 	}
 
