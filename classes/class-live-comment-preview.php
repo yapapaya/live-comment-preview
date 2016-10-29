@@ -206,9 +206,16 @@ class Live_Comment_Preview {
 	 */
 	function get_html() {
 		$template = $this->template_file();
-		$template_function = $template[0].'_template';
+
+               $template_name = $template[0];
 		$file = $template[1];
-		$html = $this->{$template_function}( $file );
+
+               if( $template_name === 'user' ) {
+                   $html = $this->user_template( $file );
+               }else if( $template === 'theme' ) {
+                   $html = $this->theme_template( $file );
+               }
+        
 		return $html;
 	}
 
