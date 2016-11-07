@@ -395,7 +395,7 @@ class Live_Comment_Preview {
 	 * @link https://gravatar.com/site/implement/images/php/
 	 *
 	 * @param string $email          The email address.
-	 * @param string $avatar_settings {
+	 * @param array	 $avatar_settings {
 	 *     @type int    $avatar_size    Size of the Avatar.
 	 *     @type string $avatar_default Avatar to display.
 	 *     @type string $avatar_rating  Avatar rating.
