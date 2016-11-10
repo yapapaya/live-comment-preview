@@ -212,7 +212,7 @@ class Live_Comment_Preview {
 
                if( $template_name === 'user' ) {
                    $html = $this->user_template( $file );
-               }else if( $template === 'theme' ) {
+               } else if( $template === 'theme' ) {
                    $html = $this->theme_template( $file );
                }
         
